@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#12161b">
+<title>MTSR-01 · Buyerwise Material Test Standard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12161b;
+    --bg-panel:#1b2128;
+    --bg-panel-2:#212a33;
+    --border:#2e3742;
+    --border-soft:#242c35;
+    --text:#e7e9ec;
+    --text-dim:#8b96a3;
+    --text-faint:#5c6673;
+    --accent:#005b96;
+    --accent-light:#5cb3ea;
+    --accent-dim:#023a60;
+    --accent-glow:rgba(0,91,150,0.35);
+    --teal:#4fd1c5;
+    --teal-dim:#1f4b47;
+    --danger:#e5484d;
+    --good:#3fb950;
+    --radius:10px;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--border-soft) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, var(--border-soft) 1px, transparent 1px) 0 0/28px 100%,
+      var(--bg);
+    background-attachment:fixed;
+    color:var(--text);
+    font-family:var(--font-body);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-glow);}
+
+  /* ---------- header ---------- */
+  header{
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, rgba(27,33,40,0.92), rgba(27,33,40,0.78));
+    backdrop-filter:blur(6px);
+    position:sticky;top:0;z-index:20;
+  }
+  .header-inner{
+    max-width:1180px;margin:0 auto;padding:16px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand-mark{
+    width:85px;height:38px;border-radius:8px;
+    background:var(--accent);
+    box-shadow:0 0 14px var(--accent-glow), inset 0 0 0 1px rgba(255,255,255,0.15);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:700;color:#eaf3fa;font-size:14px;
+  }
+  .brand-text h1{font-family:var(--font-display);font-size:16px;margin:0;letter-spacing:0.02em;font-weight:600;}
+  .brand-text p{margin:1px 0 0;font-size:11.5px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:0.03em;}
+
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .btn{
+    font-family:var(--font-body);font-size:12.5px;font-weight:600;
+    padding:8px 13px;border-radius:7px;border:1px solid var(--border);
+    background:var(--bg-panel-2);color:var(--text);cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;transition:border-color .15s, background .15s, transform .05s;
+  }
+  .btn:hover{border-color:var(--text-faint);background:#242e38;}
+  .btn:active{transform:translateY(1px);}
+  .btn-accent{background:linear-gradient(180deg,#2f86c4,var(--accent));border-color:var(--accent);color:#eaf3fa;}
+  .btn-accent:hover{filter:brightness(1.06);}
+  .btn-ghost{background:transparent;}
+  .btn-danger{color:#ffb3b3;border-color:#4a2529;}
+  .btn-danger:hover{background:#2a1517;border-color:var(--danger);}
+  .btn-sm{padding:6px 10px;font-size:11.5px;}
+  input[type=file]{display:none;}
+
+  /* ---------- tabs ---------- */
+  .tabs{max-width:1180px;margin:0 auto;padding:14px 24px 0;display:flex;gap:6px;}
+  .tab{
+    font-family:var(--font-display);font-weight:600;font-size:13px;letter-spacing:.02em;
+    padding:10px 18px;border-radius:8px 8px 0 0;cursor:pointer;color:var(--text-dim);
+    border:1px solid transparent;border-bottom:none;position:relative;top:1px;
+  }
+  .tab.active{color:var(--text);background:var(--bg-panel);border-color:var(--border);}
+  .tab:not(.active):hover{color:var(--text);}
+
+  main{max-width:1180px;margin:0 auto;padding:0 24px 60px;}
+  .panel{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:0 10px 10px 10px;
+    padding:26px;
+  }
+  .view{display:none;}
+  .view.active{display:block;}
+
+  .section-label{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent-light);margin:0 0 14px;display:flex;align-items:center;gap:8px;
+  }
+  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+  /* ---------- form ---------- */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px;}
+  @media(max-width:720px){.form-grid{grid-template-columns:1fr;}}
+  .field{display:flex;flex-direction:column;gap:6px;}
+  .field.full{grid-column:1/-1;}
+  label{font-size:12px;font-weight:600;color:var(--text-dim);display:flex;justify-content:space-between;}
+  label .tag{font-family:var(--font-mono);font-size:10px;color:var(--text-faint);font-weight:400;}
+  input[type=text],input[type=number],input[type=date],select{
+    background:var(--bg-panel-2);border:1px solid var(--border);color:var(--text);
+    padding:10px 12px;border-radius:7px;font-size:13.5px;font-family:var(--font-body);width:100%;
+    outline:none;transition:border-color .15s, box-shadow .15s;
+  }
+  select{appearance:none;-webkit-appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,var(--text-dim) 50%),linear-gradient(135deg,var(--text-dim) 50%,transparent 50%);
+    background-position:calc(100% - 18px) center, calc(100% - 13px) center;background-size:5px 5px;background-repeat:no-repeat;
+    padding-right:34px;
+  }
+  input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);}
+  .bool-toggle{display:flex;border:1px solid var(--border);border-radius:7px;overflow:hidden;}
+  .bool-toggle button{flex:1;padding:10px;background:var(--bg-panel-2);border:none;color:var(--text-dim);font-family:var(--font-mono);font-size:12.5px;cursor:pointer;}
+  .bool-toggle button.active{background:var(--accent);color:#eaf3fa;font-weight:700;}
+
+  .form-actions{display:flex;gap:10px;margin-top:22px;align-items:center;}
+  .status-msg{font-size:12.5px;font-family:var(--font-mono);padding:6px 0;}
+  .status-msg.ok{color:var(--good);}
+  .status-msg.err{color:var(--danger);}
+
+  .hint{font-size:11px;color:var(--text-faint);line-height:1.5;margin-top:2px;}
+
+  /* ---------- view/select row ---------- */
+  .cascade{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+  .cascade-3{grid-template-columns:repeat(3,1fr);margin-bottom:16px;}
+  @media(max-width:980px){.cascade{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:560px){.cascade{grid-template-columns:1fr;}}
+  .field-test-full{margin-bottom:22px;}
+  .field-test-full select{
+    padding:14px 34px 14px 16px;font-size:15px;
+    border-color:var(--accent);box-shadow:0 0 0 1px var(--accent-dim);
+  }
+  .field-test-full select:focus{box-shadow:0 0 0 3px var(--accent-glow);}
+  .field-test-full label{font-size:12.5px;}
+
+  /* readout */
+  .readout{
+    border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:26px;
+    background:
+      radial-gradient(120% 160% at 0% 0%, rgba(245,166,35,0.06), transparent 60%),
+      var(--bg-panel-2);
+    position:relative;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+  .readout::before,.readout::after{
+    content:'';position:absolute;top:10px;width:6px;height:6px;border-radius:50%;
+    background:var(--border);box-shadow:inset 0 0 0 1px #000;
+  }
+  .readout::before{left:10px;}
+  .readout::after{right:10px;}
+  .readout-label{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--text-dim);text-transform:uppercase;margin-bottom:6px;}
+  .readout-value{
+    font-family:var(--font-mono);font-size:28px;font-weight:700;color:var(--accent-light);
+    text-shadow:0 0 18px var(--accent-glow);letter-spacing:.01em;word-break:break-word;
+  }
+  .readout-value.empty{color:var(--text-faint);font-size:16px;font-weight:400;text-shadow:none;}
+  .readout-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);text-align:right;}
+  .pill{display:inline-block;padding:3px 9px;border-radius:20px;background:var(--teal-dim);color:var(--teal);font-size:10.5px;font-family:var(--font-mono);letter-spacing:.05em;}
+
+  /* ---------- table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{
+    text-align:left;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--text-dim);padding:9px 12px;border-bottom:1px solid var(--border);white-space:nowrap;
+  }
+  tbody td{padding:10px 12px;border-bottom:1px solid var(--border-soft);color:var(--text);}
+  tbody tr:hover td{background:rgba(255,255,255,0.02);}
+  tbody tr.highlight td{background:rgba(0,91,150,0.14);border-bottom-color:var(--accent-dim);}
+  tbody tr.highlight td:first-child{box-shadow:inset 3px 0 0 var(--accent);}
+  .empty-row td{color:var(--text-faint);text-align:center;padding:26px;font-family:var(--font-mono);font-size:12px;}
+  .type-chip{font-family:var(--font-mono);font-size:10px;padding:2px 7px;border-radius:5px;border:1px solid var(--border);color:var(--text-dim);}
+  .table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;}
+  .table-toolbar{display:flex;justify-content:space-between;align-items:center;margin:30px 0 12px;gap:10px;flex-wrap:wrap;}
+  .search{max-width:240px;}
+  .row-actions button{background:none;border:none;color:var(--text-faint);cursor:pointer;padding:4px;}
+  .row-actions button:hover{color:var(--danger);}
+
+  footer{max-width:1180px;margin:0 auto;padding:18px 24px 40px;color:var(--text-faint);font-size:11px;font-family:var(--font-mono);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+
+  /* ---------- print ---------- */
+  @media print{
+    body{background:#fff !important;color:#111 !important;}
+    header, footer, .no-print{display:none !important;}
+    main{max-width:100%;padding:0;margin:0;}
+    .panel{background:#fff;border:none;padding:0;border-radius:0;}
+    .section-label{color:#111;}
+    .section-label::after{background:#ccc;}
+    label{color:#333;}
+    select{background:#fff !important;color:#111 !important;border:1px solid #999 !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .readout{background:#fff;border:1px solid #999;box-shadow:none;}
+    .readout::before,.readout::after{display:none;}
+    .readout-value{color:#111 !important;text-shadow:none !important;}
+    .readout-value.empty{color:#666 !important;}
+    .readout-meta{color:#333 !important;}
+    .pill{background:#eee;color:#111;border:1px solid #ccc;}
+    table{font-size:11px;}
+    thead th{color:#333;border-bottom:1px solid #999;}
+    tbody td{color:#111;border-bottom:1px solid #ddd;}
+    tbody tr.highlight td{background:#dceaf5 !important;}
+    .table-wrap{border:1px solid #999;border-radius:0;overflow:visible;}
+    .table-toolbar{margin:22px 0 10px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">YOUNGONE</div>
+      <div class="brand-text">
+        <h1>MATERIAL TEST STANDARD</h1>
+        <p>MTSR-01 &nbsp;·&nbsp; Test MTSR</p>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-ghost btn-sm" id="btnExportJson" title="Download all records as a .json file">⬇ Save JSON</button>
+      <button class="btn btn-ghost btn-sm" id="btnImportJsonTrigger" title="Load records from a .json file">⬆ Load JSON</button>
+      <button class="btn btn-ghost btn-sm" id="btnExportCsv" title="Download all records as a .csv file">⬇ Export CSV</button>
+      <button class="btn btn-ghost btn-sm" id="btnImportCsvTrigger" title="Load records from a .csv file">⬆ Import CSV</button>
+      <button class="btn btn-danger btn-sm" id="btnClearAll" title="Erase all records">Clear All</button>
+      <input type="file" id="fileJson" accept="application/json">
+      <input type="file" id="fileCsv" accept=".csv,text/csv">
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-view="view">▤ View Data</div>
+    <div class="tab" data-view="add">＋ Add Data</div>
+  </div>
+</header>
+
+<main>
+  <div class="panel">
+
+    <!-- ==================== ADD DATA ==================== -->
+    <section class="view" id="view-add">
+      <div class="section-label">New Test Record</div>
+      <form id="addForm">
+        <div class="form-grid">
+          <div class="field">
+            <label>Buyer <span class="tag">required</span></label>
+            <input type="text" id="fBuyer" list="dlBuyer" placeholder="e.g. Marks" autocomplete="off" required>
+            <datalist id="dlBuyer"></datalist>
+          </div>
+          <div class="field">
+            <label>Material Category <span class="tag">required</span></label>
+            <input type="text" id="fCategory" list="dlCategory" placeholder="e.g. Accessories" autocomplete="off" required>
+            <datalist id="dlCategory"></datalist>
+          </div>
+          <div class="field">
+            <label>Material Name <span class="tag">required</span></label>
+            <input type="text" id="fMaterial" list="dlMaterial" placeholder="e.g. Lace" autocomplete="off" required>
+            <datalist id="dlMaterial"></datalist>
+          </div>
+          <div class="field">
+            <label>Test Name <span class="tag">required</span></label>
+            <input type="text" id="fTest" list="dlTest" placeholder="e.g. Color fastness" autocomplete="off" required>
+            <datalist id="dlTest"></datalist>
+          </div>
+          <div class="field full">
+            <label>Test MTSR <span class="tag">required</span></label>
+            <input type="text" id="fValueText" placeholder="e.g. > 4 ">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-accent">＋ Add Record</button>
+          <button type="button" class="btn btn-ghost" id="btnResetForm">Reset</button>
+          <span class="status-msg" id="formStatus"></span>
+        </div>
+      </form>
+    </section>
+
+    <!-- ==================== VIEW DATA ==================== -->
+    <section class="view active" id="view-view">
+      <div class="table-toolbar" style="margin-top:0;">
+        <div class="section-label" style="margin:0;flex:1;">Lookup</div>
+        <button class="btn btn-ghost btn-sm no-print" id="btnPrintView">🖨 Print / Save as PDF</button>
+      </div>
+      <div class="cascade cascade-3">
+        <div class="field">
+          <label>Buyer</label>
+          <select id="vBuyer"><option value="">Select buyer…</option></select>
+        </div>
+        <div class="field">
+          <label>Material Category</label>
+          <select id="vCategory"><option value="">Select category…</option></select>
+        </div>
+        <div class="field">
+          <label>Material Name</label>
+          <select id="vMaterial"><option value="">Select material…</option></select>
+        </div>
+      </div>
+      <div class="field field-test-full">
+        <label>Test Name</label>
+        <select id="vTest"><option value="">Select test…</option></select>
+      </div>
+
+      <div class="readout">
+        <div>
+          <div class="readout-label">Test MTSR result</div>
+          <div class="readout-value empty" id="readoutValue">— select a test —</div>
+        </div>
+        <div class="readout-meta" id="readoutMeta"></div>
+      </div>
+
+      <div class="table-toolbar">
+        <div class="section-label" style="margin:0;flex:1;">Tests for selected material</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>S.No</th><th>Test Name</th><th>MTSR Value</th><th class="no-print"></th></tr></thead>
+          <tbody id="materialTestsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+  <footer>
+    <span id="recordCount">0 records logged</span>
+    <span>Stored locally in this browser · export JSON/CSV to back up or move machines</span>
+  </footer>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  const STORAGE_KEY = "mtl01_records_v1";
+  let records = load();
+
+  // ---------- persistence ----------
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function persist(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }catch(e){}
+  }
+  function uid(){ return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  // ---------- helpers ----------
+  function uniq(arr){ return [...new Set(arr)]; }
+  function getBuyers(){ return uniq(records.map(r=>r.buyer)).sort((a,b)=>a.localeCompare(b)); }
+  function getCategories(buyer){ return uniq(records.filter(r=>r.buyer===buyer).map(r=>r.category)).sort((a,b)=>a.localeCompare(b)); }
+  function getMaterials(buyer, cat){ return uniq(records.filter(r=>r.buyer===buyer && r.category===cat).map(r=>r.material)).sort((a,b)=>a.localeCompare(b)); }
+  function getTestsFor(buyer, cat, mat){ return records.filter(r=>r.buyer===buyer && r.category===cat && r.material===mat); }
+  function formatValue(r){
+    return r.mtsrValue;
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('view-'+tab.dataset.view).classList.add('active');
+      if(tab.dataset.view==='view'){ refreshViewDropdowns(); }
+    });
+  });
+
+  // ---------- Add form ----------
+  const fBuyer = document.getElementById('fBuyer');
+  const fCategory = document.getElementById('fCategory');
+  const fMaterial = document.getElementById('fMaterial');
+  const fTest = document.getElementById('fTest');
+  const formStatus = document.getElementById('formStatus');
+
+  function refreshAddDatalists(){
+    document.getElementById('dlBuyer').innerHTML = getBuyers().map(b=>`<option value="${escapeHtml(b)}">`).join('');
+    document.getElementById('dlCategory').innerHTML = getCategories(fBuyer.value.trim()).map(c=>`<option value="${escapeHtml(c)}">`).join('');
+    document.getElementById('dlMaterial').innerHTML = getMaterials(fBuyer.value.trim(), fCategory.value.trim()).map(m=>`<option value="${escapeHtml(m)}">`).join('');
+    const existingTests = getTestsFor(fBuyer.value.trim(), fCategory.value.trim(), fMaterial.value.trim()).map(r=>r.testName);
+    document.getElementById('dlTest').innerHTML = uniq(existingTests).map(t=>`<option value="${escapeHtml(t)}">`).join('');
+  }
+  fBuyer.addEventListener('input', refreshAddDatalists);
+  fCategory.addEventListener('input', refreshAddDatalists);
+  fMaterial.addEventListener('input', refreshAddDatalists);
+
+  document.getElementById('addForm').addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const buyer = fBuyer.value.trim();
+    const category = fCategory.value.trim();
+    const material = fMaterial.value.trim();
+    const testName = fTest.value.trim();
+    const el = document.getElementById('fValueText');
+    const value = el ? el.value.trim() : '';
+    if(!buyer || !category || !material || !testName){
+      showStatus('Buyer, Category, Material Name and Test Name are required.', true);
+      return;
+    }
+    if(value===''){
+      showStatus('Enter a Test MTSR value.', true);
+      return;
+    }
+    // update in place if same buyer+category+material+test already exists
+    const existing = records.find(r=>r.buyer===buyer && r.category===category && r.material===material && r.testName===testName);
+    if(existing){
+      existing.mtsrValue = value;
+      showStatus(`Updated existing record: ${testName} → ${value}`, false);
+    }else{
+      records.push({ id: uid(), buyer, category, material, testName, mtsrValue: value });
+      showStatus(`Added: ${buyer} / ${category} / ${material} / ${testName}`, false);
+    }
+    persist();
+    updateRecordCount();
+    refreshAddDatalists();
+  });
+
+  function showStatus(msg, isErr){
+    formStatus.textContent = msg;
+    formStatus.className = 'status-msg ' + (isErr?'err':'ok');
+    setTimeout(()=>{ if(formStatus.textContent===msg) formStatus.textContent=''; }, 4000);
+  }
+
+  document.getElementById('btnResetForm').addEventListener('click', ()=>{
+    document.getElementById('addForm').reset();
+    formStatus.textContent = '';
+  });
+
+  // ---------- View tab: cascading selects ----------
+  const vBuyer = document.getElementById('vBuyer');
+  const vCategory = document.getElementById('vCategory');
+  const vMaterial = document.getElementById('vMaterial');
+  const vTest = document.getElementById('vTest');
+  const readoutValue = document.getElementById('readoutValue');
+  const readoutMeta = document.getElementById('readoutMeta');
+
+  function refreshViewDropdowns(){
+    const buyers = getBuyers();
+    vBuyer.innerHTML = '<option value="">Select buyer…</option>' + buyers.map(b=>`<option value="${escapeHtml(b)}">${escapeHtml(b)}</option>`).join('');
+    populateCategories();
+  }
+  function populateCategories(){
+    const buyer = vBuyer.value;
+    const cats = buyer ? getCategories(buyer) : [];
+    vCategory.innerHTML = '<option value="">Select category…</option>' + cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    populateMaterials();
+  }
+  function populateMaterials(){
+    const buyer = vBuyer.value, cat = vCategory.value;
+    const mats = (buyer && cat) ? getMaterials(buyer, cat) : [];
+    vMaterial.innerHTML = '<option value="">Select material…</option>' + mats.map(m=>`<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+    populateTests();
+  }
+  function populateTests(){
+    const buyer = vBuyer.value, cat = vCategory.value, mat = vMaterial.value;
+    const tests = (buyer && cat && mat) ? getTestsFor(buyer, cat, mat) : [];
+    vTest.innerHTML = '<option value="">Select test…</option>' + tests.map(r=>`<option value="${escapeHtml(r.testName)}">${escapeHtml(r.testName)}</option>`).join('');
+    renderMaterialTable();
+    updateReadout();
+  }
+  vBuyer.addEventListener('change', populateCategories);
+  vCategory.addEventListener('change', populateMaterials);
+  vMaterial.addEventListener('change', populateTests);
+  vTest.addEventListener('change', ()=>{ renderMaterialTable(); updateReadout(); });
+
+  function updateReadout(){
+    const buyer = vBuyer.value, cat = vCategory.value, mat = vMaterial.value, test = vTest.value;
+    const rec = records.find(r=>r.buyer===buyer && r.category===cat && r.material===mat && r.testName===test);
+    if(rec){
+      readoutValue.textContent = formatValue(rec);
+      readoutValue.classList.remove('empty');
+      readoutMeta.innerHTML = `${escapeHtml(buyer)} / ${escapeHtml(cat)} / ${escapeHtml(mat)}`;
+    }else{
+      readoutValue.textContent = '— select a test —';
+      readoutValue.classList.add('empty');
+      readoutMeta.textContent = '';
+    }
+  }
+
+  function renderMaterialTable(){
+    const buyer = vBuyer.value, cat = vCategory.value, mat = vMaterial.value, selectedTest = vTest.value;
+    const tbody = document.getElementById('materialTestsBody');
+    if(!buyer || !cat || !mat){
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="4">Select a buyer, category and material to see its tests.</td></tr>`;
+      return;
+    }
+    const rows = getTestsFor(buyer, cat, mat);
+    if(rows.length===0){
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="4">No tests logged for this material yet.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map((r,i)=>`
+      <tr class="${r.testName===selectedTest?'highlight':''}">
+        <td>${i+1}</td>
+        <td>${escapeHtml(r.testName)}</td>
+        <td>${escapeHtml(formatValue(r))}</td>
+        <td class="row-actions no-print"><button data-id="${r.id}" title="Delete record">✕</button></td>
+      </tr>`).join('');
+    tbody.querySelectorAll('.row-actions button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        records = records.filter(r=>r.id!==btn.dataset.id);
+        persist();
+        updateRecordCount();
+        refreshViewDropdowns();
+      });
+    });
+  }
+
+  // ---------- record count ----------
+  function updateRecordCount(){
+    document.getElementById('recordCount').textContent = records.length + (records.length===1 ? ' record logged' : ' records logged');
+  }
+
+  // ---------- JSON export/import ----------
+  document.getElementById('btnExportJson').addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(records, null, 2)], {type:'application/json'});
+    downloadBlob(blob, 'material_test_data.json');
+  });
+  document.getElementById('btnImportJsonTrigger').addEventListener('click', ()=> document.getElementById('fileJson').click());
+  document.getElementById('fileJson').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(reader.result);
+        if(!Array.isArray(parsed)) throw new Error('not an array');
+        const clean = parsed.filter(r=>r && r.category && r.material && r.testName).map(r=>({
+          id: r.id || uid(),
+          buyer: String(r.buyer ?? ''),
+          category: String(r.category), material: String(r.material), testName: String(r.testName),
+          mtsrValue: String(r.mtsrValue ?? '')
+        }));
+        records = clean;
+        persist(); updateRecordCount(); refreshAddDatalists(); refreshViewDropdowns();
+        alert(`Loaded ${clean.length} records from ${file.name}.`);
+      }catch(err){ alert('Could not read that file as valid JSON records.'); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+
+  // ---------- CSV export/import ----------
+  function csvEscape(v){
+    v = String(v ?? '');
+    if(/[",\n]/.test(v)) return '"' + v.replace(/"/g,'""') + '"';
+    return v;
+  }
+  document.getElementById('btnExportCsv').addEventListener('click', ()=>{
+    const header = ['Buyer','Material Category','Material Name','Test Name','Test MTSR'];
+    const lines = [header.join(',')];
+    records.forEach(r=>{
+      lines.push([r.buyer, r.category, r.material, r.testName, r.mtsrValue].map(csvEscape).join(','));
+    });
+    const blob = new Blob([lines.join('\n')], {type:'text/csv'});
+    downloadBlob(blob, 'material_test_data.csv');
+  });
+  document.getElementById('btnImportCsvTrigger').addEventListener('click', ()=> document.getElementById('fileCsv').click());
+  document.getElementById('fileCsv').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const rows = parseCsv(reader.result);
+        if(rows.length < 1) throw new Error('empty');
+        const header = rows[0].map(h=>h.trim().toLowerCase());
+        const idx = {
+          buyer: header.indexOf('buyer'),
+          category: header.indexOf('material category'),
+          material: header.indexOf('material name'),
+          testName: header.indexOf('test name'),
+          mtsrValue: header.indexOf('test mtsr')
+        };
+        if(idx.category===-1 || idx.material===-1 || idx.testName===-1 || idx.mtsrValue===-1){
+          throw new Error('missing columns');
+        }
+        const clean = rows.slice(1).filter(r=>r.length>1 && r[idx.category]).map(r=>({
+          id: uid(),
+          buyer: idx.buyer!==-1 ? (r[idx.buyer] || '') : '',
+          category: r[idx.category] || '',
+          material: r[idx.material] || '',
+          testName: r[idx.testName] || '',
+          mtsrValue: r[idx.mtsrValue] || ''
+        }));
+        records = clean;
+        persist(); updateRecordCount(); refreshAddDatalists(); refreshViewDropdowns();
+        alert(`Loaded ${clean.length} records from ${file.name}.`);
+      }catch(err){ alert('Could not read that CSV. Expected columns: Buyer, Material Category, Material Name, Test Name, Test MTSR'); }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+  function parseCsv(text){
+    const rows = []; let row = []; let field = ''; let inQuotes = false;
+    for(let i=0;i<text.length;i++){
+      const c = text[i];
+      if(inQuotes){
+        if(c==='"'){
+          if(text[i+1]==='"'){ field+='"'; i++; } else { inQuotes=false; }
+        } else field += c;
+      }else{
+        if(c==='"') inQuotes = true;
+        else if(c===','){ row.push(field); field=''; }
+        else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=''; }
+        else if(c==='\r'){ /* skip */ }
+        else field += c;
+      }
+    }
+    if(field.length || row.length){ row.push(field); rows.push(row); }
+    return rows.filter(r => r.length>1 || (r.length===1 && r[0]!==''));
+  }
+
+  function downloadBlob(blob, filename){
+    // Inside the Android app wrapper, window.AndroidSave is injected natively
+    // and writes the file to the device's Downloads folder.
+    if(window.AndroidSave && window.AndroidSave.saveFile){
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = String(reader.result).split(',')[1] || '';
+        try{
+          window.AndroidSave.saveFile(base64, filename, blob.type || 'application/octet-stream');
+        }catch(e){ alert('Could not save file: ' + e); }
+      };
+      reader.readAsDataURL(blob);
+      return;
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ---------- clear all ----------
+  document.getElementById('btnClearAll').addEventListener('click', ()=>{
+    if(records.length===0) return;
+    if(confirm(`Delete all ${records.length} records? This cannot be undone (export a backup first if unsure).`)){
+      records = [];
+      persist(); updateRecordCount(); refreshAddDatalists(); refreshViewDropdowns();
+    }
+  });
+
+  // ---------- init ----------
+  document.getElementById('btnPrintView').addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.querySelector('.tab[data-view="view"]').classList.add('active');
+    document.getElementById('view-view').classList.add('active');
+    window.print();
+  });
+  refreshAddDatalists();
+  refreshViewDropdowns();
+  updateRecordCount();
+})();
+</script>
+</body>
+</html>
